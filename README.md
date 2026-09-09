@@ -27,11 +27,11 @@ or **[BUILD.md](BUILD.md)** to build the matching source package.
 
 ## Examples
 
-Earlier development interface; filesystem paths have been masked:
+Earlier development interface
 
 ![DKS Patch Builder interface](docs/images/patch-builder.png)
 
-User-provided in-game example of changed textures:
+In-game example of changed textures
 
 ![Texture modification example](docs/images/swapped-textures.jpeg)
 
