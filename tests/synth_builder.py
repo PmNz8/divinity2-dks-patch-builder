@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 PmNz8
+# SPDX-License-Identifier: AGPL-3.0-only
+
 #!/usr/bin/env python3
 """Independent synthetic DV2 archive constructor for tests.
 
