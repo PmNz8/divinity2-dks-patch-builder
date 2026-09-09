@@ -1,0 +1,11 @@
+[project]
+name = "divinity2-dks-patch-builder"
+version = "0.1.0"
+description = "Guarded Divinity II texture-package compiler and DKS archive builder"
+requires-python = ">=3.12,<3.13"
+license = "AGPL-3.0-only"
+authors = [{name = "PmNz8"}]
+dependencies = []
+
+[tool.uv]
+package = false
