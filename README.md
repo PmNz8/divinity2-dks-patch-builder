@@ -3,6 +3,10 @@
 An experimental Windows x64 tool by [PmNz8](https://github.com/PmNz8) for building
 texture modifications in `DKS_Patch.dv2` archives.
 
+Built around the game's patch-archive loading mechanism, DKS Patch Builder
+keeps supported texture replacements in a dedicated `DKS_Patch.dv2` — so you
+can change the game's look without repacking its original asset archives.
+
 ## What it does
 
 - Imports **Builder Packages** exported by [Texture Viewer](https://github.com/PmNz8/divinity2-texture-viewer).
@@ -16,7 +20,7 @@ generate mip levels or create game references for newly named textures.
 ## Start
 
 Extract the entire Windows ZIP and run **DKSPatchBuilder.exe**. No separate
-Python, .NET or WebView2 installation is required. This candidate is unsigned.
+Python, .NET or WebView2 installation is required. The executable is unsigned.
 
 See **[USAGE.md](USAGE.md)** for the complete workflow, safety rules and limits,
 or **[BUILD.md](BUILD.md)** to build the matching source package.

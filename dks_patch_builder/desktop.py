@@ -22,14 +22,14 @@ from .controller import BuilderController
 from .version import APP_NAME, COPYRIGHT, LICENSE_NAME, PROFILE_URL, VERSION
 
 
-WINDOW_TITLE = f"Divinity II {APP_NAME} {VERSION} candidate"
+WINDOW_TITLE = f"Divinity II {APP_NAME} {VERSION}"
 FOOTER_TEXT = f"{COPYRIGHT} · AGPLv3 ({LICENSE_NAME}) · No warranty"
 ABOUT_TEXT = (
-    f"Divinity II {APP_NAME} {VERSION} candidate\n\n"
+    f"Divinity II {APP_NAME} {VERSION}\n\n"
     f"{COPYRIGHT}\n"
     "Licensed under GNU AGPL-3.0-only. Redistribution is permitted only under "
     "the license terms. LICENSE and third-party notices are beside the executable. "
-    "The matching source ZIP accompanies this candidate.\n\n"
+    "The matching source ZIP accompanies this release.\n\n"
     "No warranty is provided; use the tool and modified archives at your own risk."
 )
 DKS_FILE_TYPES = ("DV2 archives", "*.dv2"), ("All files", "*.*")
