@@ -7,6 +7,10 @@ Built around the game's patch-archive loading mechanism, DKS Patch Builder
 keeps supported texture replacements in a dedicated `DKS_Patch.dv2` — so you
 can change the game's look without repacking its original asset archives.
 
+Developed and tested exclusively with the **GOG edition of Divinity II:
+Developer's Cut**. Compatibility with other editions or storefront versions
+has not been verified.
+
 ## What it does
 
 - Imports **Builder Packages** exported by [Texture Viewer](https://github.com/PmNz8/divinity2-texture-viewer).
