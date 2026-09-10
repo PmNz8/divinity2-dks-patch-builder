@@ -5,10 +5,16 @@
 
 from .base import (
     AssetHandler,
+    CompiledBundle,
     CompiledResource,
     HandlerError,
     HandlerRegistry,
     UnsupportedAssetTypeError,
+)
+from .narrative_bundle import (
+    ASSET_TYPE_NARRATIVE,
+    NarrativeBundleHandler,
+    NarrativeBundleHandlerError,
 )
 from .texture_nif import (
     ASSET_TYPE_TEXTURE_NIF,
@@ -19,15 +25,19 @@ from .texture_nif import (
 )
 
 
-def default_registry() -> HandlerRegistry:
+def default_registry(*, include_narrative: bool = True) -> HandlerRegistry:
     registry = HandlerRegistry()
     registry.register(TextureNIFHandler())
+    if include_narrative:
+        registry.register(NarrativeBundleHandler())
     return registry
 
 
 __all__ = [
     "AssetHandler",
     "ASSET_TYPE_TEXTURE_NIF",
+    "ASSET_TYPE_NARRATIVE",
+    "CompiledBundle",
     "CompiledResource",
     "HandlerError",
     "HandlerRegistry",
@@ -35,6 +45,8 @@ __all__ = [
     "TEXTURE_DIRECTORY_NAME",
     "TextureNIFHandler",
     "TextureNIFHandlerError",
+    "NarrativeBundleHandler",
+    "NarrativeBundleHandlerError",
     "UnsupportedAssetTypeError",
     "default_registry",
 ]

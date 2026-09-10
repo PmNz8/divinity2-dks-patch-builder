@@ -10,7 +10,9 @@ from .archive_factory import (
 )
 from .handlers import (
     ASSET_TYPE_TEXTURE_NIF,
+    ASSET_TYPE_NARRATIVE,
     AssetHandler,
+    CompiledBundle,
     CompiledResource,
     HandlerError,
     HandlerRegistry,
@@ -18,6 +20,8 @@ from .handlers import (
     TEXTURE_DIRECTORY_NAME,
     TextureNIFHandler,
     TextureNIFHandlerError,
+    NarrativeBundleHandler,
+    NarrativeBundleHandlerError,
     UnsupportedAssetTypeError,
     default_registry,
 )
@@ -101,6 +105,7 @@ __all__ = [
     "ASSET_SCHEMA",
     "ASSET_SCHEMA_VERSION",
     "ASSET_TYPE_TEXTURE_NIF",
+    "ASSET_TYPE_NARRATIVE",
     "AssetHandler",
     "ArchiveRecord",
     "AssetPackage",
@@ -109,6 +114,7 @@ __all__ = [
     "ADD_NEW",
     "ADD_OVERRIDE",
     "CompiledResource",
+    "CompiledBundle",
     "CompiledResourcePlan",
     "BuilderController",
     "BuilderModelError",
@@ -146,6 +152,8 @@ __all__ = [
     "TEXTURE_DIRECTORY_NAME",
     "TextureNIFHandler",
     "TextureNIFHandlerError",
+    "NarrativeBundleHandler",
+    "NarrativeBundleHandlerError",
     "TexturePackageFiles",
     "UnsupportedAssetTypeError",
     "create_empty_dks_patch",

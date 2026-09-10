@@ -84,13 +84,44 @@ class CompiledResource:
         return self.compiled_payload
 
 
+@dataclass(frozen=True, slots=True)
+class CompiledBundle:
+    """Immutable group of compiled resources produced by one handler."""
+
+    asset_type: str
+    profile_id: str
+    resources: tuple[CompiledResource, ...]
+    manifest_sha256: str
+    warnings: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.asset_type, str) or not self.asset_type:
+            raise HandlerError("compiled bundle asset_type must be a non-empty string")
+        if not isinstance(self.profile_id, str) or not self.profile_id:
+            raise HandlerError("compiled bundle profile_id must be a non-empty string")
+        if not isinstance(self.resources, tuple) or not self.resources:
+            raise HandlerError("compiled bundle resources must be a non-empty tuple")
+        if any(not isinstance(resource, CompiledResource) for resource in self.resources):
+            raise HandlerError("compiled bundle resources must be CompiledResource instances")
+        if any(resource.asset_type != self.asset_type for resource in self.resources):
+            raise HandlerError("compiled bundle resource asset types must match the bundle")
+        keys = [resource.target_logical_path.casefold() for resource in self.resources]
+        if len(set(keys)) != len(keys):
+            raise HandlerError("compiled bundle resource target paths must be unique")
+        if not isinstance(self.manifest_sha256, str) or _SHA256_RE.fullmatch(self.manifest_sha256) is None:
+            raise HandlerError("compiled bundle manifest SHA-256 is invalid")
+        object.__setattr__(self, "manifest_sha256", self.manifest_sha256.casefold())
+        if not isinstance(self.warnings, tuple) or any(not isinstance(item, str) for item in self.warnings):
+            raise HandlerError("compiled bundle warnings must be a tuple of strings")
+
+
 @runtime_checkable
 class AssetHandler(Protocol):
     """Minimal protocol implemented by one resource compiler."""
 
     asset_type: str
 
-    def compile(self, package: AssetPackage) -> CompiledResource:
+    def compile(self, package: AssetPackage) -> CompiledResource | CompiledBundle:
         ...
 
 
@@ -123,7 +154,7 @@ class HandlerRegistry:
                 f"no asset handler registered for {asset_type!r}"
             ) from error
 
-    def compile(self, package: AssetPackage) -> CompiledResource:
+    def compile(self, package: AssetPackage) -> CompiledResource | CompiledBundle:
         return self.get(package.asset_type).compile(package)
 
     def asset_types(self) -> tuple[str, ...]:
@@ -132,6 +163,7 @@ class HandlerRegistry:
 
 __all__ = [
     "AssetHandler",
+    "CompiledBundle",
     "CompiledResource",
     "HandlerError",
     "HandlerRegistry",

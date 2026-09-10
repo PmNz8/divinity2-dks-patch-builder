@@ -1,5 +1,35 @@
 # DKS Patch Builder usage
 
+## Narrative packages in 0.2.0.dev0
+
+The development build accepts `narrative.fov_debt.v1` exported by Quest Author.
+This is the fixed Beata/Hansel debt template for a new Flames of Vengeance
+campaign, not a general importer for arbitrary quests or existing saves.
+
+1. Select the complete pristine supported GOG Packed root and create a new,
+   empty `DKS_Patch.dv2` outside Packed.
+2. Import the complete exported folder (`asset.json`, `bundle.json`, `quest.json`
+   and five payload members). All resources validate before anything is queued.
+3. Review all five rows and their warnings. The full source audit can take time;
+   the GUI remains responsive while editing actions are disabled.
+4. Save using the normal external archive transaction. Nothing is installed into
+   the game. Reopen the output to inspect its five resources.
+
+Narrative groups cannot be mixed with texture packages or other narrative groups.
+Cancelling any pending member cancels all five; individual narrative resource
+removal and reimport into a nonempty DKS are refused. To revise a quest, change
+the saved authoring project and build a fresh package/archive.
+
+The first import requires the recognized original 533-archive corpus, with no
+unknown overlays. Before saving, original path/size/mtime continuity and exact
+used-source hashes are rechecked. A mismatch stops the write; it is not silently
+accepted as a new baseline. Package hashes check integrity, not the publisher's
+identity or universal correctness of arbitrary binary content. Use trusted exports.
+
+The original quest template has bounded game tests. The new delivery integration
+has separate offline and programmatic real-Tk tests; a manual gameplay test of
+this DKS is still a separate step. The old texture-only workflow follows below.
+
 ## Launch and requirements
 
 Use Windows 10/11 x64. Extract the whole portable ZIP into a writable local

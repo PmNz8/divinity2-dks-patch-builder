@@ -14,6 +14,7 @@ import unittest
 from dks_patch_builder import (
     ASSET_SCHEMA,
     ASSET_SCHEMA_VERSION,
+    ASSET_TYPE_NARRATIVE,
     ASSET_TYPE_TEXTURE_NIF,
     AssetPackageError,
     MAX_ASSET_JSON_BYTES,
@@ -406,7 +407,7 @@ class AssetPackageInputValidationTests(unittest.TestCase):
 class HandlerRegistryTests(unittest.TestCase):
     def test_registry_lookup_and_unsupported_asset_type(self) -> None:
         registry = default_registry()
-        self.assertEqual(registry.asset_types(), (ASSET_TYPE_TEXTURE_NIF,))
+        self.assertEqual(registry.asset_types(), (ASSET_TYPE_NARRATIVE, ASSET_TYPE_TEXTURE_NIF))
         self.assertIsInstance(registry.get(ASSET_TYPE_TEXTURE_NIF), TextureNIFHandler)
         with self.assertRaises(UnsupportedAssetTypeError):
             registry.get("model_nif")

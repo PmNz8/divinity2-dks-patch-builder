@@ -1,7 +1,10 @@
-# Divinity II DKS Patch Builder 0.1.0
+# Divinity II DKS Patch Builder 0.2.0.dev0
 
 An experimental Windows x64 tool by [PmNz8](https://github.com/PmNz8) for building
-texture modifications in `DKS_Patch.dv2` archives.
+texture modifications and fixed-profile narrative bundles in `DKS_Patch.dv2` archives.
+
+This development version adds Quest Author's new-FoV Beata/Hansel package type.
+It is not a published release; the existing 0.1.0 release remains texture-only.
 
 Built around the game's patch-archive loading mechanism, DKS Patch Builder
 keeps supported texture replacements in a dedicated `DKS_Patch.dv2` — so you
@@ -18,8 +21,15 @@ has not been verified.
 - Creates or opens a DKS archive, queues changes and shows their targets/warnings.
 - Saves to a new archive or updates the selected DKS with one previous-file backup.
 
-Only texture packages are supported in 0.1.0. The tool does not install mods,
-generate mip levels or create game references for newly named textures.
+- Imports `narrative.fov_debt.v1` packages from Quest Author as one five-resource group.
+- Validates the recognized pristine source corpus; rejects narrative conflicts,
+  partial groups and unsupported source versions.
+
+Narrative imports require a new empty DKS outside Packed and an empty queue.
+They cannot be mixed with other packages or used to upgrade an existing quest.
+The tool does not install mods, generate mip levels or create game references
+for newly named textures. New narrative game-runtime acceptance is separate from
+the verified local GUI/package/archive workflow.
 
 ## Start
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0.dev0 — local development, unreleased
+
+- Fixed new-FoV `narrative.fov_debt.v1` package handler and immutable resource bundles.
+- Atomic five-resource import/cancellation, pristine-source checks and external-only
+  narrative DKS output; no merge, partial removal or in-place quest upgrade.
+- Quest Author/Tkinter → package → Builder/Tkinter → DKS pipeline verified locally,
+  including readback equality of all five resources. No new game-runtime Pass.
+- Existing texture and transaction behavior retained; no runtime dependency added.
+
 ## 0.1.0 — experimental release
 
 - Standalone Tkinter DKS archive builder with a single serialized backend worker.

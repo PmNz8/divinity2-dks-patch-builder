@@ -1,4 +1,7 @@
-# Building 0.1.0 from source
+# Building 0.2.0.dev0 from source
+
+This checkout is an unreleased development version. The existing source-identity,
+test and packaging guards still apply; a local build does not publish a release.
 
 Own code is AGPL-3.0-only; copyright 2026 PmNz8. Use Windows x64 and the official
 Python **3.12.6** x64 installation with Tcl/Tk **8.6.13**. The source tree has no
