@@ -32,6 +32,7 @@ def _build_parser() -> argparse.ArgumentParser:
         type=Path,
         help="write the headless import report to a new JSON file",
     )
+    check.add_argument('--gui-smoke', action='store_true', help='construct hidden Tk widgets for a startup check')
     subparsers.add_parser("gui", help="launch the Tkinter candidate")
     return parser
 
@@ -64,7 +65,7 @@ def _module_list() -> list[str]:
     )
 
 
-def _check_payload() -> dict[str, object]:
+def _check_payload(*, gui_smoke: bool = False) -> dict[str, object]:
     """Import the runtime surface without constructing a Tk root window."""
 
     import tkinter
@@ -72,7 +73,7 @@ def _check_payload() -> dict[str, object]:
     from .desktop import run_gui as desktop_run_gui
 
     modules = _module_list()
-    return {
+    result = {
         "ok": callable(desktop_run_gui),
         "frontend": "tkinter",
         "tk_version": tkinter.TkVersion,
@@ -84,6 +85,29 @@ def _check_payload() -> dict[str, object]:
         "modules": modules,
         "module_list": modules,
     }
+    if gui_smoke:
+        import time
+        from tkinter import ttk, filedialog, messagebox
+        from .desktop import BuilderTkApp
+        root = tkinter.Tk()
+        root.withdraw()
+        app = None
+        try:
+            app = BuilderTkApp(root=root, tk_module=tkinter, ttk_module=ttk,
+                               filedialog_module=filedialog, messagebox_module=messagebox)
+            deadline = time.monotonic() + 10
+            while app.future is not None and time.monotonic() < deadline:
+                root.update()
+                time.sleep(.01)
+            if app.future is not None or app.controller.model.snapshot().opened:
+                raise RuntimeError('GUI startup did not reach the empty idle state')
+            result['gui_startup_smoke'] = True
+            result['gui_smoke_scope'] = 'Real Tk construction and idle controller; no game/source access'
+        finally:
+            if app is not None:
+                app.executor.shutdown(wait=True, cancel_futures=True)
+            root.destroy()
+    return result
 
 
 def _write_report(path: Path, payload: dict[str, object]) -> tuple[bool, str | None]:
@@ -118,7 +142,7 @@ def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(raw_args)
     if args.command == "check":
         try:
-            result = _check_payload()
+            result = _check_payload(gui_smoke=True) if args.gui_smoke else _check_payload()
         except Exception as error:
             result = {"ok": False, "reason": str(error) or type(error).__name__}
             if args.report is not None:

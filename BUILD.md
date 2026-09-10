@@ -46,6 +46,10 @@ Final GUI and clean second-PC acceptance are manual. Keep hashes of the exact
 tested ZIP, and distribute matching source alongside binaries. Standard library,
 Tcl/Tk and PyInstaller-derived components retain the notices in `LICENSES`.
 
+For a local real-Tk startup check, add `--gui-smoke` to the `check` command.
+It constructs hidden widgets and waits for the empty controller to become idle;
+it does not read game files, open native file dialogs or replace the full workflow test.
+
 Build package hashes cover the complete pinned wheel/sdist distributions, not
 just one developer environment. Runtime binary identities are recorded in the
 generated manifest. CPython's official Windows binaries carry PSF signatures;
