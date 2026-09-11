@@ -4,7 +4,7 @@ An experimental Windows x64 tool by [PmNz8](https://github.com/PmNz8) for buildi
 texture modifications and fixed-profile narrative bundles in `DKS_Patch.dv2` archives.
 
 Version 0.1.1 adds Quest Author's new-FoV Beata/Hansel package type.
-This is a local release candidate; the published 0.1.0 release remains texture-only.
+The earlier 0.1.0 release supports textures only.
 
 Built around the game's patch-archive loading mechanism, DKS Patch Builder
 keeps supported texture replacements in a dedicated `DKS_Patch.dv2` — so you

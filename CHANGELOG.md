@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1 — release candidate, unreleased
+## 0.1.1 — 2026-09-11
 
 - Fixed new-FoV `narrative.fov_debt.v1` package handler and immutable resource bundles.
 - Atomic five-resource import/cancellation, pristine-source checks and external-only

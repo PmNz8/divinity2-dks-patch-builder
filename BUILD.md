@@ -1,6 +1,6 @@
 # Building 0.1.1 from source
 
-This checkout is an unreleased 0.1.1 candidate. The existing source-identity,
+This checkout contains version 0.1.1. The existing source-identity,
 test and packaging guards still apply; a local build does not publish a release.
 
 Own code is AGPL-3.0-only; copyright 2026 PmNz8. Use Windows x64 and the official
