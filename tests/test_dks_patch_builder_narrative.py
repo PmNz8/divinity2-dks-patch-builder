@@ -25,6 +25,7 @@ from dks_patch_builder.handlers import narrative_bundle as bundle_module
 from dks_patch_builder.handlers.narrative_bundle import MAX_BUNDLE_BYTES
 from dks_patch_builder.narrative_sources import SourceAudit
 from tests.synth_builder import build_synthetic
+from tests.test_dks_patch_builder_texture import TexturePackageFixture
 
 
 TEXT_KEYS = (
@@ -359,6 +360,32 @@ class NarrativeBuilderTests(unittest.TestCase):
         self.assertFalse(model.has_pending_changes)
         self.assertIsNone(model._narrative_audit)
         self.assertEqual(len(model.pending_changes()), 0)
+
+    def test_saved_narrative_archive_accepts_texture_without_changing_quest_resources(self) -> None:
+        fixture = TexturePackageFixture(self.root / "texture-package")
+        texture_path = r"Win32\Textures\Dragon_A_DM.nif"
+        (self.packed / "Patch.dv2").write_bytes(
+            build_synthetic([(texture_path, fixture.template_payload, "zlib")], 1)
+        )
+        model = self.open_model()
+        model.import_package(self.package)
+        model.save_in_place()
+        from dks_patch_builder.dv2lib import DV2Session
+        before = DV2Session(self.external)
+        narrative = {entry.path: before.read_entry_bytes(entry.path) for entry in before.entries}
+        for reopened in (False, True):
+            with self.subTest(reopened=reopened):
+                if reopened:
+                    model = self.open_model()
+                model.import_package(fixture.root)
+                self.assertEqual(len(model.pending_changes()), 1)
+                model.save_in_place()
+                self.assertEqual(model.pending_changes(), ())
+                after = DV2Session(self.external)
+                self.assertEqual(len(after.entries), 6)
+                for path, payload in narrative.items():
+                    self.assertEqual(after.read_entry_bytes(path), payload)
+                self.assertEqual(after.read_entry_bytes(texture_path), fixture.template_payload)
 
 
 if __name__ == "__main__":

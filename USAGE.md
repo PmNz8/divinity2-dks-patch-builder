@@ -1,8 +1,8 @@
 # DKS Patch Builder usage
 
-## Narrative packages in 0.2.0.dev0
+## Narrative packages in 0.1.1
 
-The development build accepts `narrative.fov_debt.v1` exported by Quest Author.
+Version 0.1.1 accepts `narrative.fov_debt.v1` exported by Quest Author.
 This is the fixed Beata/Hansel debt template for a new Flames of Vengeance
 campaign, not a general importer for arbitrary quests or existing saves.
 
@@ -15,10 +15,17 @@ campaign, not a general importer for arbitrary quests or existing saves.
 4. Save using the normal external archive transaction. Nothing is installed into
    the game. Reopen the output to inspect its five resources.
 
-Narrative groups cannot be mixed with texture packages or other narrative groups.
+While a narrative group is pending, other imports are blocked. Save the group
+first; texture packages can then be added to that saved DKS, including after
+reopening it. This texture-plus-quest combination has a maintainer-reported
+runtime success; it is not proof of arbitrary package compatibility.
 Cancelling any pending member cancels all five; individual narrative resource
 removal and reimport into a nonempty DKS are refused. To revise a quest, change
 the saved authoring project and build a fresh package/archive.
+There is no comprehensive cross-package conflict protection or automatic
+resolution. Review logical target paths yourself: a later import may replace
+an existing resource. Multiple narrative packages and in-place quest upgrades
+remain unsupported; shared quest resources are not semantically merged.
 
 The first import requires the recognized original 533-archive corpus, with no
 unknown overlays. Before saving, original path/size/mtime continuity and exact
@@ -26,9 +33,10 @@ used-source hashes are rechecked. A mismatch stops the write; it is not silently
 accepted as a new baseline. Package hashes check integrity, not the publisher's
 identity or universal correctness of arbitrary binary content. Use trusted exports.
 
-The original quest template has bounded game tests. The new delivery integration
-has separate offline and programmatic real-Tk tests; a manual gameplay test of
-this DKS is still a separate step. The old texture-only workflow follows below.
+The original quest template has bounded game tests, and the maintainer reports
+runtime success with a combined texture/quest DKS. The delivery integration also
+has offline and programmatic real-Tk tests. Test your own generated DKS separately;
+the runtime report does not certify every configuration. The texture workflow follows.
 
 ## Launch and requirements
 

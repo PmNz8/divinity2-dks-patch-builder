@@ -204,7 +204,11 @@ def _validate_config(value: object) -> dict[str, object]:
 
 
 class NarrativeBundleHandler:
-    """Compile one strict narrative bundle into five zlib resources."""
+    """Validate and import five precompiled resources from a trusted exporter.
+
+    Hashes enforce package integrity, not compiler authenticity or game semantics.
+    The Builder does not recompile quest.json or execute imported content.
+    """
 
     asset_type = ASSET_TYPE_NARRATIVE
 

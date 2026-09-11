@@ -1,13 +1,19 @@
 # Changelog
 
-## 0.2.0.dev0 — local development, unreleased
+## 0.1.1 — release candidate, unreleased
 
 - Fixed new-FoV `narrative.fov_debt.v1` package handler and immutable resource bundles.
 - Atomic five-resource import/cancellation, pristine-source checks and external-only
-  narrative DKS output; no merge, partial removal or in-place quest upgrade.
+  narrative DKS output; no narrative merge, partial removal or in-place quest upgrade.
 - Quest Author/Tkinter → package → Builder/Tkinter → DKS pipeline verified locally,
-  including readback equality of all five resources. No new game-runtime Pass.
+  including readback equality of all five resources.
 - Existing texture and transaction behavior retained; no runtime dependency added.
+- Retains adding textures after saving the narrative group. The maintainer reports
+  successful runtime use of a combined texture/quest DKS; arbitrary combinations
+  are not certified. Documented the lack of comprehensive conflict protection
+  and automatic resolution.
+- Added source-audit regression tests for unknown overlays, missing originals,
+  metadata drift, exact used-source hashes and the documented fast-recheck limit.
 
 ## 0.1.0 — experimental release
 
