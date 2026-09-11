@@ -1,4 +1,4 @@
-# Divinity II DKS Patch Builder 0.1.1
+# Divinity II DKS Patch Builder 0.1.2
 
 An experimental Windows x64 tool by [PmNz8](https://github.com/PmNz8) for building
 texture modifications and fixed-profile narrative bundles in `DKS_Patch.dv2` archives.
@@ -18,6 +18,7 @@ has not been verified.
 
 - Imports **Builder Packages** exported by [Texture Viewer](https://github.com/PmNz8/divinity2-texture-viewer).
 - Compiles edited BC1/BC3 textures; unchanged BC2 packages are also supported.
+- Imports batches of texture packages and regenerates existing lower mips from explicit MIP0 packages.
 - Creates or opens a DKS archive, queues changes and shows their targets/warnings.
 - Saves to a new archive or updates the selected DKS with one previous-file backup.
 
@@ -30,7 +31,7 @@ queue. Save that group first; texture packages can then be added to the saved DK
 The maintainer reports successful game-runtime use of a DKS containing textures
 and the fixed quest payload. This is a tested combination, not universal mod compatibility.
 Merging several narrative packages or upgrading an existing quest is unsupported.
-The tool does not install mods, generate mip levels or create game references
+The tool does not install mods, resize textures or create game references
 for newly named textures.
 
 ### Conflicts are your responsibility

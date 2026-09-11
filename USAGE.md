@@ -57,7 +57,7 @@ cloud-synced or other unsupported destination may fail; do not bypass guards.
 
 ## 1. Prepare a texture package
 
-In Texture Viewer 0.1.0, open a compatible DV2, select a texture and choose
+In Texture Viewer, open a compatible DV2, select a texture and choose
 **Export Builder Package**. The package is a directory containing:
 
 ```text
@@ -81,9 +81,20 @@ or 16-bit PNG. Do not edit `template.nif` or the inner `texture.json` metadata.
 BC1/BC3 changes can be compiled; edited BC2 is rejected. Unchanged supported
 packages round-trip without changing the texture payload bytes.
 
-The tool does not regenerate lower mips. Editing mip 0 alone leaves other mips
-unchanged, so the original appearance may return with distance. Prepare each
-existing mip you want to change in your image editor.
+Full-mip v1 packages preserve each mip independently: edit each desired mip.
+Viewer 0.1.2 can also export explicit MIP0-only packages (inner texture schema
+v2; outer asset envelope stays v1). For these, edit only mip-00 RGB and required
+alpha PNGs. On change, Builder generates the source-matching lower chain using
+the recorded area-filter profile. No change preserves every original byte.
+BC2 is not supported in MIP0 mode. Source dimensions, format, count and mip
+geometry remain fixed. Do not delete lower PNGs from a v1 package to simulate v2.
+
+Raw-channel filtering treats channels independently, without gamma or normal
+renormalization. The sRGB profile uses linear-light, premultiplied-opacity
+filtering and is inappropriate for normals or packed data. Neither profile
+preserves cutout alpha coverage or infers game texture semantics. Use full-mip
+packages for custom normals/cutouts. BC1 binary alpha uses threshold 128.
+MIP0 generation has automated offline checks, not blanket runtime acceptance.
 
 Normally leave the target path in `asset.json` unchanged. An advanced user may
 edit only `target_logical_path` to a safe `.nif` logical path. This does not
@@ -124,6 +135,22 @@ all. **Remove Override** queues removal; it does not delete an original Packed
 resource. Re-import a package after further PNG edits: queued compiled bytes
 are not a live link to the package directory.
 
+### Import Batch (0.1.2)
+
+Select the parent containing direct child texture-package folders (for example,
+the Viewer's timestamped batch folder). Batch import is nonrecursive and
+texture-only; root reports/nonpackage files are skipped. A malformed package
+is reported while other packages continue. Duplicate case-insensitive targets
+are errors, never silently last-package-wins. Narrative imports remain separate.
+Progress is shown after each package. **Stop batch** or closing the window stops
+after the current package; completed plans stay queued. Nothing is saved by
+importing. Review the batch report and Pending before Save / Save As.
+
+Packages compile sequentially, but compiled payloads remain in the pending
+queue; importing thousands of large textures can consume substantial RAM.
+Use smaller batches and save between them if necessary. The report can contain
+private paths; review it before sharing.
+
 ## 4. Save and recover
 
 **Save As** publishes to a new, non-existing `.dv2` file after verification.
@@ -154,7 +181,8 @@ the window while work is active waits; it does not interrupt a transaction.
 
 Only existing-layout standalone texture NIFs and their existing mip geometry
 are supported. There is no model/audio/item import, texture resizing, arbitrary
-wrapper creation or automatic mip generation. Size/memory limits apply; large
+wrapper creation. Only explicit v2 packages regenerate the existing lower chain.
+Size/memory limits apply; large
 valid textures or archives can still consume substantial memory and CPU.
 Canonical DV2 paths use backslashes; noncanonical paths are outside the tested
 support. Structural validity does not prove runtime use. Existing-path texture

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 — local experimental candidate
+
+- Batch import of direct child texture packages with progress and cancellation.
+- Duplicate targets remain errors; successful imports only queue until explicit Save.
+- Source-bound MIP0 v2 generation for BC1/BC3 with raw-channel or sRGB/opacity area filtering.
+- Unedited base preserves all source bytes, including lower compressed mip data.
+- Existing full-mip v1, BC2 no-op, narrative and archive transaction policies retained.
+
 ## 0.1.1 — 2026-09-11
 
 - Fixed new-FoV `narrative.fov_debt.v1` package handler and immutable resource bundles.

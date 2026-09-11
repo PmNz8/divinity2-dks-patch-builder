@@ -406,6 +406,45 @@ class DKSPatchBuilderModel:
         except Exception as error:
             raise BuilderModelError(f"cannot import asset package: {error}") from error
 
+    def import_packages(self, parent_directory, *, progress=None, cancelled=None):
+        """Import direct child texture packages; retain successes in the queue.
+
+        No archive is written. Duplicate targets remain explicit errors, and
+        narrative bundles are excluded from this texture-only batch operation.
+        """
+        self._require_open()
+        if self._narrative_group_keys:
+            raise BuilderModelError("batch import is blocked while a narrative bundle is queued")
+        parent = Path(parent_directory).absolute()
+        reject_links(parent)
+        if not parent.is_dir():
+            raise BuilderModelError("batch parent must be a directory")
+        children = sorted(parent.iterdir(), key=lambda path: (path.name.casefold(), path.name))
+        report = {"total": len(children), "cancelled": False, "items": []}
+        for index, child in enumerate(children):
+            if cancelled is not None and cancelled():
+                report["cancelled"] = True
+                break
+            item = {"package": child.name}
+            try:
+                reject_links(child)
+                if not child.is_dir():
+                    item.update(status="skipped", reason="not a package directory")
+                elif not (child / "asset.json").is_file():
+                    item.update(status="skipped", reason="no asset.json")
+                else:
+                    package = load_asset_package(child)
+                    if package.asset_type != "texture_nif":
+                        raise BuilderModelError("batch import supports texture_nif packages only")
+                    row = self.import_package(child)
+                    item.update(status="imported", logical_path=row.target_logical_path)
+            except Exception as error:
+                item.update(status="error", reason=str(error))
+            report["items"].append(item)
+            if progress is not None:
+                progress({"processed": index + 1, "total": len(children), "path": child.name})
+        return report
+
     def remove_override(self, logical_path: str) -> PendingChangeRow:
         inventory, selected = self._require_open()
         try:

@@ -108,6 +108,39 @@ class BuilderModelTests(unittest.TestCase):
         accepted = self.model.import_package(duplicate.root)
         self.assertEqual(accepted.action, REPLACE)
 
+    def test_batch_import_preserves_conflicts_and_only_queues(self):
+        self.open()
+        before = self.dks.read_bytes()
+        self.package("zduplicate", TEMPLATE.lower())
+        self.package("new", NEW)
+        (self.packages / "report.json").write_text("{}")
+        report = self.model.import_packages(self.packages)
+        statuses = [item["status"] for item in report["items"]]
+        self.assertEqual(statuses.count("imported"), 2)
+        self.assertEqual(statuses.count("error"), 1)
+        self.assertEqual(statuses.count("skipped"), 1)
+        self.assertEqual(len(self.model.pending_changes()), 2)
+        self.assertEqual(self.dks.read_bytes(), before)
+
+    def test_batch_cancel_retains_only_completed_packages(self):
+        self.open()
+        self.package("second", NEW)
+        events = []
+        report = self.model.import_packages(self.packages,
+            progress=events.append, cancelled=lambda: bool(events))
+        self.assertTrue(report["cancelled"])
+        self.assertEqual(len(report["items"]), 1)
+        self.assertEqual(len(self.model.pending_changes()), 1)
+
+    def test_batch_bad_package_does_not_hide_valid_package(self):
+        self.open()
+        bad = self.packages / "bad"
+        bad.mkdir()
+        (bad / "asset.json").write_text("{}")
+        report = self.model.import_packages(self.packages)
+        self.assertEqual([item["status"] for item in report["items"]], ["error", "imported"])
+        self.assertEqual(len(self.model.pending_changes()), 1)
+
     def test_invalid_package_does_not_mutate_pending_queue(self) -> None:
         self.open()
         self.model.remove_override(CONTROL)

@@ -14,6 +14,8 @@ from __future__ import annotations
 from concurrent.futures import Future, ThreadPoolExecutor
 import json
 from pathlib import Path
+from queue import Queue, Empty, Full
+from threading import Event
 import webbrowser
 from typing import Any, Callable
 
@@ -155,6 +157,8 @@ class BuilderTkApp:
         self.closing_requested = False
         self.closed = False
         self.busy = False
+        self._batch_cancel = Event()
+        self._batch_progress = Queue(maxsize=1)
         self._mutable_widgets: list[Any] = []
 
         self.filter_var = self.tk.StringVar(value="")
@@ -197,12 +201,16 @@ class BuilderTkApp:
             ("Open", self.request_open, "open"),
             ("Close", self.request_close_archive, "close"),
             ("Import Package", self.request_import_package, "import_package"),
+            ("Import Batch", self.request_import_batch, "import_batch"),
             ("Save", self.request_save, "save"),
             ("Save As", self.request_save_as, "save_as"),
             ("About", self.show_about, "about"),
         ):
             self._button(toolbar, text, callback, name)
         self.busy_label = self.ttk.Label(toolbar, textvariable=self.busy_var)
+        self.batch_cancel_button = self.ttk.Button(toolbar,
+            text="Stop batch", command=self._batch_cancel.set)
+        self.batch_cancel_button.pack(side="left", padx=2)
         self.busy_label.pack(side="right", padx=8)
         self.status_label = self.ttk.Label(toolbar, textvariable=self.status_var)
         self.status_label.pack(side="right", padx=8)
@@ -394,6 +402,7 @@ class BuilderTkApp:
         for name, enabled in (
             ("close_button", opened),
             ("import_package_button", opened),
+            ("import_batch_button", opened),
             ("save_button", opened and dirty),
             ("save_as_button", opened and dirty),
             ("remove_button", opened and bool(self.entry_tree.selection())),
@@ -447,6 +456,7 @@ class BuilderTkApp:
         return True
 
     def _poll_future(self) -> None:
+        self._show_batch_progress()
         future = self.future
         if future is None:
             return
@@ -555,6 +565,54 @@ class BuilderTkApp:
             self._on_mutation,
             "import package",
         )
+
+    def request_import_batch(self) -> None:
+        if not self._request_allowed():
+            return
+        try:
+            parent = self.filedialog.askdirectory(parent=self.root,
+                title="Choose batch parent (direct child texture packages)")
+        except Exception as error:
+            self._set_status(str(error), error=True)
+            return
+        if not parent:
+            return
+        self._batch_cancel.clear()
+        self._submit(lambda: self.controller.import_packages(str(parent),
+            progress=self._queue_batch_progress, cancelled=self._batch_cancel.is_set),
+            self._on_batch_import, "batch import")
+
+    def _queue_batch_progress(self, progress):
+        try:
+            self._batch_progress.put_nowait(progress)
+        except Full:
+            try:
+                self._batch_progress.get_nowait()
+            except Empty:
+                pass
+            self._batch_progress.put_nowait(progress)
+
+    def _show_batch_progress(self):
+        mailbox = getattr(self, "_batch_progress", None)
+        if mailbox is None:
+            return
+        try:
+            progress = mailbox.get_nowait()
+        except Empty:
+            return
+        self._set_status(f"Importing {progress['processed']}/{progress['total']} · {progress['path']}")
+
+    def _on_batch_import(self, response):
+        if self._handle_response(response):
+            report = response["result"]
+            counts = {status: sum(item["status"] == status for item in report["items"])
+                      for status in ("imported", "skipped", "error")}
+            self.messagebox.showinfo("Batch import",
+                f"{'Stopped' if report['cancelled'] else 'Finished'}: "
+                f"{counts['imported']} queued, {counts['skipped']} skipped, {counts['error']} errors.\n"
+                "Nothing saved yet. Review Pending before Save / Save As.", parent=self.root)
+            self._batch_report_after_refresh = report
+            self._refresh_all()
 
     def request_save(self) -> None:
         if not self._request_allowed():
@@ -734,6 +792,11 @@ class BuilderTkApp:
         self.pending = [dict(item) for item in result if isinstance(item, dict)] if isinstance(result, list) else []
         self._render_pending()
 
+        report = getattr(self, "_batch_report_after_refresh", None)
+        if report is not None:
+            self._batch_report_after_refresh = None
+            self._set_report(report)
+
     def show_about(self) -> None:
         try:
             self.messagebox.showinfo("About DKS Patch Builder", ABOUT_TEXT, parent=self.root)
@@ -766,6 +829,8 @@ class BuilderTkApp:
         if self.closed:
             return
         self.closing_requested = True
+        if hasattr(self, "_batch_cancel"):
+            self._batch_cancel.set()
         if self._filter_after_id is not None:
             try:
                 self.root.after_cancel(self._filter_after_id)

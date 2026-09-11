@@ -32,7 +32,7 @@ class ReleaseEntryTests(unittest.TestCase):
                 self.assertNotIn(name, environment)
 
     def test_version_literals_and_frontend_branding(self) -> None:
-        self.assertEqual(VERSION, "0.1.1")
+        self.assertEqual(VERSION, "0.1.2")
         version_resource = build_script._version_file_text()
         self.assertIn("filevers=(0, 1, 1, 0)", version_resource)
         self.assertIn("prodvers=(0, 1, 1, 0)", version_resource)

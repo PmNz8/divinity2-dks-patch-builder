@@ -140,6 +140,13 @@ class BuilderController:
     def remove_override(self, logical_path: str) -> dict[str, JSONValue]:
         return self._call(lambda: self.model.remove_override(logical_path))
 
+    def import_packages(self, parent_directory, *, progress=None, cancelled=None):
+        parent = self._dialog_path(parent_directory)
+        if parent is None:
+            return self._cancelled()
+        return self._call(lambda: self.model.import_packages(parent,
+            progress=progress, cancelled=cancelled))
+
     def cancel(self, logical_path: str) -> dict[str, JSONValue]:
         return self._call(lambda: self.model.cancel(logical_path))
 
