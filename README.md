@@ -1,5 +1,8 @@
 # Divinity II DKS Patch Builder 0.2.8
 
+[CAT/ITEM resource compatibility matrix](COMPATIBILITY_MATRIX.md) — which container
+or external texture to edit, tested behavior and current tool limits.
+
 An experimental Windows x64 tool by [PmNz8](https://github.com/PmNz8) for building
 model/texture modifications and fixed-profile narrative bundles in `DKS_Patch.dv2` archives.
 
