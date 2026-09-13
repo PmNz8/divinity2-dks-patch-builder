@@ -1,7 +1,7 @@
 [project]
 name = "divinity2-dks-patch-builder"
-version = "0.1.2"
-description = "Guarded Divinity II texture and fixed narrative package DKS builder"
+version = "0.2.8"
+description = "Guarded Divinity II model, texture and fixed narrative package DKS builder"
 requires-python = ">=3.12,<3.13"
 license = "AGPL-3.0-only"
 authors = [{name = "PmNz8"}]

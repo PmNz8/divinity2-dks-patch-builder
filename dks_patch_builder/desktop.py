@@ -90,6 +90,11 @@ class TkDialogAdapter:
             )
         )
 
+    def choose_model_package(self) -> str | None:
+        return self._path(self.filedialog.askopenfilename(
+            parent=self.root, title="Choose D2Model package",
+            filetypes=(("D2Model packages", "*.d2model"),)))
+
     def choose_save_as(self) -> str | None:
         return self._path(
             self.filedialog.asksaveasfilename(
@@ -201,6 +206,7 @@ class BuilderTkApp:
             ("Open", self.request_open, "open"),
             ("Close", self.request_close_archive, "close"),
             ("Import Package", self.request_import_package, "import_package"),
+            ("Import Model", self.request_import_model, "import_model"),
             ("Import Batch", self.request_import_batch, "import_batch"),
             ("Save", self.request_save, "save"),
             ("Save As", self.request_save_as, "save_as"),
@@ -402,6 +408,7 @@ class BuilderTkApp:
         for name, enabled in (
             ("close_button", opened),
             ("import_package_button", opened),
+            ("import_model_button", opened),
             ("import_batch_button", opened),
             ("save_button", opened and dirty),
             ("save_as_button", opened and dirty),
@@ -565,6 +572,19 @@ class BuilderTkApp:
             self._on_mutation,
             "import package",
         )
+
+    def request_import_model(self) -> None:
+        if not self._request_allowed():
+            return
+        try:
+            package = self.dialogs.choose_model_package()
+        except Exception as error:
+            self._set_status(str(error), error=True)
+            return
+        if package is None:
+            return
+        self._submit(lambda: self.controller.import_model_package(package),
+                     self._on_mutation, "import model package")
 
     def request_import_batch(self) -> None:
         if not self._request_allowed():

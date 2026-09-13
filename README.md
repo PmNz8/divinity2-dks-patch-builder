@@ -1,9 +1,34 @@
-# Divinity II DKS Patch Builder 0.1.2
+# Divinity II DKS Patch Builder 0.2.8
 
 An experimental Windows x64 tool by [PmNz8](https://github.com/PmNz8) for building
-texture modifications and fixed-profile narrative bundles in `DKS_Patch.dv2` archives.
+model/texture modifications and fixed-profile narrative bundles in `DKS_Patch.dv2` archives.
 
-Version 0.1.1 adds Quest Author's new-FoV Beata/Hansel package type.
+Current 0.2.8 supports recognized static ITEM topology/material edits and prepared
+physics through ordinary Import Model. Same-path original variants warn;
+identity and transactional write guards remain enforced. There is no separate
+Physics Experiment mode in this version. Use the separate cooker for changed
+collision. No automatic map placement or static-map geometry rebuild is included.
+Shared textures can affect unrelated objects; native dark/parallax effects can
+differ from a Blender preview. Use Model Viewer 0.1.9 and Blender addon 0.1.11.
+
+Physics is imported as opaque bytes. Builder checks package integrity and target
+paths, not the contents or correctness of the physics file. Prepare changed
+physics with the separate cooker first. Invalid supplied physics can cause
+incorrect collisions or game crashes even when the package passes integrity checks.
+
+Earlier version 0.2.3 added whole-owner CAT/ITEM packages, including supported combined
+embedded geometry/animation edits. Diagnostics identify the complete container
+as the target; external mesh labels are not rewritten. Ordinary player CAT can
+retain unsupported native clips with a static preview; DIV2 write guards remain.
+Those older package versions remain subject to their own supported scope.
+
+Version 0.2.2 accepts prepared v4 collision carriers through ordinary **Import Model**.
+Unchanged v3 physics also needs no special mode; changed uncooked v3 is blocked.
+Version 0.2.1 added opt-in **Physics Experiment** import of v3 collision carriers,
+patching only recognized convex vertex coordinates without recooking. Runtime
+behavior is untested and may include crashes or incorrect collision.
+Version 0.2.0 added source-preserving `.d2model` imports from Model Viewer/Blender.
+Version 0.1.1 added Quest Author's new-FoV Beata/Hansel package type.
 The earlier 0.1.0 release supports textures only.
 
 Built around the game's patch-archive loading mechanism, DKS Patch Builder
@@ -16,6 +41,10 @@ has not been verified.
 
 ## What it does
 
+- Imports verified `.d2model` v1/v2 packages as atomic pending groups. Only changed
+  native resources are included; unchanged sources remain out of the patch.
+- Rechecks exact model-source archive/payload identities and warns about different
+  same-path variants. Model outputs must stay outside every `Packed` directory.
 - Imports **Builder Packages** exported by [Texture Viewer](https://github.com/PmNz8/divinity2-texture-viewer).
 - Compiles edited BC1/BC3 textures; unchanged BC2 packages are also supported.
 - Imports batches of texture packages and regenerates existing lower mips from explicit MIP0 packages.
@@ -33,6 +62,8 @@ and the fixed quest payload. This is a tested combination, not universal mod com
 Merging several narrative packages or upgrading an existing quest is unsupported.
 The tool does not install mods, resize textures or create game references
 for newly named textures.
+Model-package assembly/preview choices do not rewrite game references. The model
+integration has offline tests; importing successfully is not game-runtime certification.
 
 ### Conflicts are your responsibility
 

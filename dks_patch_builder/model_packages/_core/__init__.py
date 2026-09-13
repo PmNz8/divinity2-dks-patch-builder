@@ -1,0 +1,4 @@
+# SPDX-FileCopyrightText: 2026 PmNz8
+# SPDX-License-Identifier: AGPL-3.0-only
+# Source-bound model verifier; see ../CORE_SOURCES.json.
+"""Divinity II source-preserving 3D viewer/exporter (in development)."""

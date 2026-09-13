@@ -137,6 +137,12 @@ class BuilderController:
             return self._cancelled()
         return self._call(lambda: self.model.import_package(package))
 
+    def import_model_package(self, path: str | None) -> dict[str, JSONValue]:
+        package = self._dialog_path(path)
+        if package is None:
+            return self._cancelled()
+        return self._call(lambda: self.model.import_model_package(package))
+
     def remove_override(self, logical_path: str) -> dict[str, JSONValue]:
         return self._call(lambda: self.model.remove_override(logical_path))
 

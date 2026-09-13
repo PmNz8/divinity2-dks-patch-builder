@@ -23,6 +23,7 @@ from .inventory import DKS_PATCH_FILE_NAME, PackedInventory, SelectedDKS, scan_p
 from .narrative_profile_data import PROFILE
 from .narrative_sources import SourceAudit, audit_sources, reject_links, recheck_sources
 from .package import load_asset_package
+from .model_packages.integration import ModelPackageImports, require_external
 from .planner import CompiledResourcePlan, RemovalPlan, plan_compiled_resource, plan_remove_override
 from .transaction import TransactionSaveResult, save_as_transaction, save_in_place_transaction
 
@@ -89,6 +90,7 @@ class DKSPatchBuilderModel:
         self._narrative_audit: SourceAudit | None = None
         self._narrative_group_keys: frozenset[str] = frozenset()
         self._narrative_warnings: tuple[str, ...] = ()
+        self._model_imports = ModelPackageImports()
 
     @property
     def registry(self) -> HandlerRegistry:
@@ -133,6 +135,7 @@ class DKSPatchBuilderModel:
 
     def _reset_pending(self) -> None:
         self._pending.clear()
+        self._model_imports.clear()
         self._narrative_audit = None
         self._narrative_group_keys = frozenset()
         self._narrative_warnings = ()
@@ -293,6 +296,7 @@ class DKSPatchBuilderModel:
 
     def _pending_row(self, order: int, plan: Plan) -> PendingChangeRow:
         warnings = tuple(str(warning.message) for warning in plan.warnings)
+        warnings += self._model_imports.warnings_for(plan.target_key)
         if plan.target_key.casefold() in self._narrative_group_keys:
             warnings += self._narrative_warnings
         warning_codes = tuple(str(warning.code) for warning in plan.warnings)
@@ -406,6 +410,25 @@ class DKSPatchBuilderModel:
         except Exception as error:
             raise BuilderModelError(f"cannot import asset package: {error}") from error
 
+    def import_model_package(self, path: str | os.PathLike) -> dict:
+        """Validate the entire model group before publishing any pending plan."""
+        inventory, selected = self._require_open()
+        if self._narrative_group_keys:
+            raise BuilderModelError("model imports are blocked while a narrative bundle is queued")
+        try:
+            group = self._model_imports.prepare(path, inventory, selected, self._pending)
+            summary = group.package.summary()
+            summary["warnings"].extend(group.audit.warnings if group.audit else ())
+            summary["queued_count"] = len(group.plans)
+            summary["queued_targets"] = [plan.target_logical_path for plan in group.plans]
+            staged = self._pending.copy()
+            staged.update((plan.target_key.casefold(), plan) for plan in group.plans)
+        except Exception as error:
+            raise BuilderModelError(f"cannot import model package: {error}") from error
+        self._model_imports.add(group)
+        self._pending = staged
+        return summary
+
     def import_packages(self, parent_directory, *, progress=None, cancelled=None):
         """Import direct child texture packages; retain successes in the queue.
 
@@ -479,6 +502,15 @@ class DKSPatchBuilderModel:
             )
             self._reset_pending()
             return rows
+        group = self._model_imports.group_for(key)
+        if group is not None:
+            rows = tuple(self._pending_row(index, plan)
+                         for index, plan in enumerate(self._pending.values(), start=1)
+                         if plan.target_key.casefold() in group.keys)
+            for member in group.keys:
+                self._pending.pop(member)
+            self._model_imports.remove(group)
+            return rows
         plan = self._pending.pop(key, None)
         if plan is None:
             raise BuilderModelError(f"no pending operation targets {logical_path!r}")
@@ -494,6 +526,7 @@ class DKSPatchBuilderModel:
         if not self._pending:
             raise BuilderModelError("there are no pending changes to save")
         self._assert_narrative_group()
+        self._model_imports.recheck(self._pending)
         return tuple(self._pending.values())
 
     def _refresh_selected(self, selected_path: Path, *, archive_added: bool = False) -> None:
@@ -515,6 +548,9 @@ class DKSPatchBuilderModel:
     def save_in_place(self) -> SaveOutcome:
         try:
             plans = self._plan_tuple()
+            if self._model_imports.active:
+                inventory, selected = self._require_open()
+                require_external(selected.physical_path, inventory.root)
             if self._narrative_group_keys:
                 inventory, selected = self._require_open()
                 self._require_narrative_destination(inventory, selected)
@@ -541,6 +577,9 @@ class DKSPatchBuilderModel:
     def save_as(self, output_path: str | os.PathLike) -> SaveOutcome:
         try:
             plans = self._plan_tuple()
+            if self._model_imports.active:
+                inventory, _selected = self._require_open()
+                require_external(output_path, inventory.root)
             if self._narrative_group_keys:
                 self._require_narrative_output_external(Path(output_path).absolute())
         except BuilderModelError:

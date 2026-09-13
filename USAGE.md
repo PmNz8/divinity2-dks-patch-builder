@@ -1,5 +1,123 @@
 # DKS Patch Builder usage
 
+## Opaque physics import in 0.2.8
+
+Prepared v4 physics is copied exactly, without inspecting its native format,
+geometry, material indices or cooking implementation. Integrity hashes, recorded
+source identity, target paths and archive transactions remain checked. Producer
+metadata is not proof of correct cooking. Bad supplied physics can crash the game.
+
+Unchanged v3 retains the original physics file. A working v3 with changes must
+first pass through the separate cooker; Builder no longer patches raw vertices.
+Only visual model data is semantically validated by Builder. Historical physics
+validation/experimental-mode descriptions below do not apply to 0.2.8.
+
+## Source variant warnings in 0.2.6
+
+0.2.7 also accepts structurally verified raw normal-map pixel changes for the
+recognized static ITEM template class. Blender0.1.11 requires explicit per-image
+Raw NM channels opt-in, preserves native RGBA including alpha and uses raw mip
+filtering without conversion or vector renormalization. No CAT/skinned expansion.
+The warning explicitly distinguishes safe serialization from runtime appearance.
+
+Import Model warns, rather than rejects, when other archives contain different
+payloads at a packaged logical path. The complete validated package payload is
+used in the external DKS; no original archive precedence is guessed. Warnings
+include the logical path, archive variants and recorded source, and appear in
+the pending resource details. Missing or changed recorded sources, invalid
+packages and archive drift before saving still block the operation.
+
+## Static ITEM templates in 0.2.5
+
+Use Model Viewer0.1.9 and Blender addon0.1.10 for recognized static ITEM topology,
+UV/shading, embedded textures and named raw parameters. Preserve original
+component/material/hierarchy identities. Farm B's three LODs are manually edited,
+not generated. Builder verifies the full owning ITEM and queues its complete
+payload; embedded textures are not redirected to external namesake resources.
+
+If triangle collision geometry/topology changed, first run D2Model Cooker0.1.1
+on the exported `.d2model`, then use ordinary **Import Model** on the prepared v4.
+Source-bound per-face physics material indices remain distinct from visual
+materials/textures. Builder does not run the SDK. Old convex v4 remains supported.
+Unsupported layouts remain rejected; normal-map pixel edits are still guarded.
+The versions below are historical, not the new triangle/topology workflow.
+
+## CAT/ITEM packages in 0.2.3
+
+Export the container with Model Viewer 0.1.7, edit supported data in Blender addon
+0.1.6, then use **Import Model** normally. Embedded changes queue one complete
+CAT/ITEM under its original logical path. The external mesh label is not the
+target. External textures still queue separately; texture-only changes need not
+queue the container. Inspect the listed resources before saving. Two packages
+changing the same container conflict rather than merge.
+
+Ordinary player dragon CAT opens statically with its missing animation-target
+warning. Original native animation is retained, not repaired. Its DIV2 geometry
+write guard still applies; this release does not yet enable that geometry edit.
+
+## Prepared collision packages in 0.2.2
+
+Cook your edited v3 `.d2model` with D2Model Cooker 0.1.0 and import the resulting
+v4 through ordinary **Import Model**. It includes model, texture and cooked NXB
+changes as one group. No cooker/runtime is needed in Builder itself. Unchanged
+v3 physics passes without cooking and is not queued. Changed uncooked v3 fails
+closed (the older explicit Physics Experiment path remains experimental).
+Cooking identity, working convex geometry and preservation of other NXB fields
+are checked; metadata is not a cryptographic signature or game-validity proof.
+
+## Model packages in 0.2.0
+
+1. Export a `.d2model` from Model Viewer or the D2Model Blender add-on. Keep the
+   preserved originals in the package; import the complete file, not extracted files.
+2. Select the complete matching `Packed` corpus. Create/open an external
+   `DKS_Patch.dv2` in a working folder outside **every** `Packed` directory.
+3. Choose **Import Model**, select the file, and review targets and warnings.
+   The entire package validates before any changed resource enters the queue.
+4. Save or Save As. The existing archive transaction verifies payloads and
+   preserves unrelated entries. An in-place save retains one previous-file backup.
+   Installation and a controlled game test remain separate, manual steps.
+
+The importer verifies v1/v2 member identities, original/current native edit bounds,
+and the declared preview assembly. It queues exact edited native bytes, not preview
+images, originals, or re-encoded textures. A package with no native changes adds
+zero rows. Supported edits remain bounded by the exporter/verifier: fixed-topology
+geometry/UV, supported material values, exported texture pixels and supported KF
+tracks. Unknown layouts, topology/reference changes and normal-map pixel edits
+are not enabled by this integration. No new resource paths or renaming.
+
+All packaged sources (including unchanged dependencies) must match their recorded
+physical archive and original payload hashes. Every same-path occurrence, including
+root `Patch.dv2`, is checked. Differing variants stop import; identical copies are
+accepted without claiming engine precedence. Source metadata and exact used-source
+hashes are rechecked before Save. This is not a full pristine-game/golden audit.
+Source revisions that differ require a correctly re-exported package, not bypassing
+the check. Use real local paths; junction/symlink paths are intentionally rejected.
+
+Canceling any pending model member cancels that whole package group. Disjoint
+model/texture imports may coexist. Pending target overlaps are errors; a saved
+same-path DKS entry can be explicitly replaced on a later import. Shared textures
+can affect other objects, and mods are not semantically merged. Review warnings.
+Narrative bundles retain their exclusive empty-queue import policy.
+
+Unresolved preview dependencies are shown as warnings. Preview pairing, component
+visibility, normal decoding options, and preview skeleton/animation selection do
+not rewrite native game references. Do not interpret preview success as a complete
+runtime dependency graph or game compatibility guarantee.
+
+Queued model bytes are an immutable snapshot: after editing the package again,
+cancel and re-import it. Group membership is pending authoring state, not metadata
+persisted in DV2. Reopening a saved patch does not reconstruct package groups;
+individual removal of saved entries is not bundle-aware.
+
+Read-only file verification is also available (no Packed or archive write):
+
+```powershell
+.\DKSPatchBuilder.exe inspect-model C:\Mods\edited.d2model --report C:\Mods\new-report.json
+```
+
+The report path must be new. Model import is an offline-supported experimental
+capability; perform a separate controlled game test for your own output.
+
 ## Narrative packages in 0.1.1
 
 Version 0.1.1 accepts `narrative.fov_debt.v1` exported by Quest Author.
@@ -201,3 +319,25 @@ Reports may contain local paths; remove private information before sharing.
 Do not attach game archives, textures, saves or package contents automatically.
 The app has no telemetry, updater or runtime downloader; the GitHub profile
 link opens only when clicked.
+# Experimental collision import (0.2.1)
+
+Choose **Physics Experiment**, accept the no-recook warning, and select a v3
+`.d2model` exported by Viewer/Blender 0.1.5. This imports model, texture and
+physics changes as one group. Regular **Import Model** still rejects v3.
+
+Only recognized PhysX 2.8.1 convex CVXM3/CLHL0/CVHL5 vertex coordinates are
+patched. Vertex count and triangle topology/order must stay unchanged; shared
+meshes and triangle-mesh physics are rejected. Actor/shape poses and every
+other byte of the NXB remain unchanged, including opaque cooked structures.
+This deliberately does NOT recook physics. Game crashes or incorrect/stale
+collision are possible. A successful import is not a runtime-validity claim.
+
+Save to an external DKS_Patch.dv2 using the usual source/conflict checks.
+There is no automatic game installation. Use a backed-up disposable save for
+manual testing. Confirm visual/texture changes, test old/new collision extents
+and re-entry, and retain an unchanged control. Old collision does not establish
+that the selected NXB was loaded. One shared texture or NXB may affect other
+objects. Canceling one pending member cancels its entire import group.
+
+Headless read-only check:
+`DKSPatchBuilder.exe inspect-model FILE.d2model --experimental-physics-no-recook --report NEW.json`

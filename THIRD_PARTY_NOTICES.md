@@ -1,9 +1,21 @@
-# Third-party notices — DKS Patch Builder 0.1.1
+# Third-party notices — DKS Patch Builder 0.2.8
 
 The product's AGPL-3.0-only license covers its own source, not the following
 independently licensed runtime components. Required notices are supplied
 verbatim under `LICENSES`; retain them when redistributing. The Windows-only
 runtime conditions do not impose Windows-only terms on the application source.
+
+The self-contained `model_packages/_core` is source-bound PmNz8 model-verifier
+code under the same AGPL-3.0-only license, not a runtime dependency on Blender or
+the research repository. The source ZIP includes `model_packages/CORE_SOURCES.json`
+with canonical source identities and mechanical namespace-copy hashes.
+
+Native physics is copied as opaque bytes. This version includes no NXU/native
+physics parser, schema-name catalog, cooking implementation, SDK headers or
+NVIDIA runtime. The locally authored carrier reader checks only the project's
+d2model envelope, hashes and target paths. It does not certify the correctness
+or licensing of user-supplied physics. CORE_SOURCES.json records this local
+separation; do not restore removed modules through a blind upstream copy.
 
 | Component | Version / origin | Terms / notice |
 |---|---|---|

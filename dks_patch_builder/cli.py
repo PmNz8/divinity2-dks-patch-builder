@@ -33,6 +33,9 @@ def _build_parser() -> argparse.ArgumentParser:
         help="write the headless import report to a new JSON file",
     )
     check.add_argument('--gui-smoke', action='store_true', help='construct hidden Tk widgets for a startup check')
+    inspect_model = subparsers.add_parser("inspect-model", help="verify a .d2model without writing archives")
+    inspect_model.add_argument("package", type=Path)
+    inspect_model.add_argument("--report", type=Path, help="write a new JSON verification report")
     subparsers.add_parser("gui", help="launch the Tkinter candidate")
     return parser
 
@@ -141,9 +144,14 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     args = _build_parser().parse_args(raw_args)
-    if args.command == "check":
+    if args.command in {"check", "inspect-model"}:
         try:
-            result = _check_payload(gui_smoke=True) if args.gui_smoke else _check_payload()
+            if args.command == "inspect-model":
+                from .model_packages.reader import read_model_package
+                result = {"ok": True, "version": VERSION,
+                          "model_package": read_model_package(args.package).summary()}
+            else:
+                result = _check_payload(gui_smoke=True) if args.gui_smoke else _check_payload()
         except Exception as error:
             result = {"ok": False, "reason": str(error) or type(error).__name__}
             if args.report is not None:

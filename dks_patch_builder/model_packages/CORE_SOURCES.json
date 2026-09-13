@@ -1,0 +1,134 @@
+{
+  "schema": "dks-model-core-sources/1",
+  "source_revision": "6be235a1ef08d8808c9e0b7315f12c5a5d66534f",
+  "transformations": [
+    "LF line endings",
+    "SPDX/source notice",
+    "tools.texture_codec -> dks_patch_builder.codec",
+    "tools.physx_retopology_codec -> local physics_triangle_codec"
+  ],
+  "files": {
+    "__init__.py": {
+      "source": "model_viewer/__init__.py",
+      "source_sha256": "762deb34ec378728e06f226b629d4af5ba39385a92c2b6bef4f50540156d4de7",
+      "vendored_sha256": "dbf1a2bf7bead6e55a8c04915d99ad94bc3262b109671828e1f2be70047ed653"
+    },
+    "nif.py": {
+      "source": "model_viewer/nif.py",
+      "source_sha256": "f639d04278475d54625db508ecddc9f8a5326d9903b3d973e3a530d0827bd81d",
+      "vendored_sha256": "90205cb4a4dba97a0f880fa687b88f30a26cd3ab5cced35d39711609ee9bc616"
+    },
+    "scene.py": {
+      "source": "model_viewer/scene.py",
+      "source_sha256": "278981f26a9db75ab245b9a13c6fc3b34b3b804fd368b9156738e26d55a1a093",
+      "vendored_sha256": "bbb6f238e20aaee9c6088133441698c2426c96c9ca00244e802cab7a3abcf70b"
+    },
+    "skinning.py": {
+      "source": "model_viewer/skinning.py",
+      "source_sha256": "bce7f777c6184ec7517c0e0f1ae350b996b47fa29619ac2a697ec32340760cf5",
+      "vendored_sha256": "0de7643c76e8c1be4b6237f61e4e7d4263597cd537a0243fca0af7c66ee9a258"
+    },
+    "animation.py": {
+      "source": "model_viewer/animation.py",
+      "source_sha256": "88566eac4886a41fdce35015a3f3d065885e6591f16a496436730ebc253e0008",
+      "vendored_sha256": "1ba94cbc0605ac469bc7e3121bc30699a83b8c58d941ebb8801c2d268316fe23"
+    },
+    "animation_editing.py": {
+      "source": "model_viewer/animation_editing.py",
+      "source_sha256": "0d6999c46cee27082dd8d1b1bf78ccfead2c6a1ec5700833251cbd1db8ce0881",
+      "vendored_sha256": "0ef41b386869cc23c45a49ad29108935b4257f47bd9016185c9298f1029cb4da"
+    },
+    "assets.py": {
+      "source": "model_viewer/assets.py",
+      "source_sha256": "722daed0fd442b544fc889d0f7e663b2e7871dd619f2ac9766dee63be21590cf",
+      "vendored_sha256": "32901f7e2a6353b7191bc2dabbbe605f20f7696f05d843972bcfce0fb371678b"
+    },
+    "containers.py": {
+      "source": "model_viewer/containers.py",
+      "source_sha256": "10a1d08e3445af56cce6bb6949b74feaf872a14166d9a708df2e1ff41f598a58",
+      "vendored_sha256": "61ebee0144bd0dfce5d0459c3cfed3152d43c105dc39fba600da1bc77f232a6f"
+    },
+    "controller.py": {
+      "source": "model_viewer/controller.py",
+      "source_sha256": "51a3827234c20ae200dea3e80d479913c29c8da58937a9d2680d76576f5d3588",
+      "vendored_sha256": "7a4110508afef68b3ffd2dd621a70b1ca91ce5b11b6dc2c4819a0803770f0c8e",
+      "pre_adaptation_vendored_sha256": "fb9dfa3329700d3d37d441f3104f37174fc3b7245740aefa05d83d0a638bba47",
+      "local_adaptation": "0.2.8 opaque physics envelope"
+    },
+    "package.py": {
+      "source": "model_viewer/package.py",
+      "source_sha256": "36b0b27cc9df99c67c5dcdb234c70e0970cbfa8e2e3b8ea162cc390c927b28e0",
+      "vendored_sha256": "918d8d6928a4f1036da2a66c68a88af461f8db1f3423405b43944d6e8edb5b9d",
+      "pre_adaptation_vendored_sha256": "ef47b94c3189977a740f3b2eebdaa6a77a113fa926ff28b3992c9394f7de7959",
+      "local_adaptation": "0.2.8 opaque physics envelope"
+    },
+    "replay.py": {
+      "source": "model_viewer/replay.py",
+      "source_sha256": "ea94b38943c545f32db4ca3b98e265214753978ea1109924168eca4c7c55908b",
+      "vendored_sha256": "82d2ebbb97bec6431c2f66d58cda7a4d9f345e22e9d5eca955f1075703c0575f"
+    },
+    "editing.py": {
+      "source": "model_viewer/editing.py",
+      "source_sha256": "c818e8c7ad89663f83dd91c976d7ab89d06211e9c01db60eb7bb25bcf8ccef03",
+      "vendored_sha256": "70c687f724707c863a49a2b12b34a54799d974736eef32fc22ccebd511e55c3d"
+    },
+    "item_geometry.py": {
+      "source": "model_viewer/item_geometry.py",
+      "source_sha256": "16802ca59810f78826f8dc817ee34d2d78d92cde22881af441963f87e69549f3",
+      "vendored_sha256": "1c19a4f0808aa443cbc96430f1efcbb9ce6eabefa690f210e09fd511c6237efe"
+    },
+    "item_editing.py": {
+      "source": "model_viewer/item_editing.py",
+      "source_sha256": "1fb08a9ccf023e1a73d560b1c8cd4a0bc8639666ca18e2adecd4b4d99167eadc",
+      "vendored_sha256": "90b2e780ecfddf6fe3c54039b1670b0606a6f401c170f3766435485d56a974b6"
+    },
+    "item_parameters.py": {
+      "source": "model_viewer/item_parameters.py",
+      "source_sha256": "f63406f4faa5b780edc57db470f3979ea78656b8b5ba62f0e127f61662dcce12",
+      "vendored_sha256": "3508052bdee511664f59c498a7b760fa4adadfaa5b9216a84e58844978547886"
+    },
+    "embedded_texture.py": {
+      "source": "model_viewer/embedded_texture.py",
+      "source_sha256": "380ff3741d0d02489b2f85d0401d2f47fca2481fdde3adee30a8e19cdbce790c",
+      "vendored_sha256": "e20a66081f5a0d934f853a2c65946a724deed2b1cf02f3b6a64c848bc3fd78df"
+    },
+    "texture_editing.py": {
+      "source": "model_viewer/texture_editing.py",
+      "source_sha256": "0b289b5cd04749a84f0c9b1c78b5b26bc47ada78c0305961381c0572fbb3b2ed",
+      "vendored_sha256": "929b29409ec7c5db895046e4b3555df2c8cf672c44e8464d0899cef50d49fef0"
+    },
+    "normal_maps.py": {
+      "source": "model_viewer/normal_maps.py",
+      "source_sha256": "7b4c68978ceb15a2f59a6d16d2e6dd31a0b50b29511e89ffa94ebdc716b44f43",
+      "vendored_sha256": "a587503ebec25f903fc99318721f93d9e1d94c5a9d2c478e9854dd208e307c72"
+    },
+    "normalization.py": {
+      "source": "model_viewer/normalization.py",
+      "source_sha256": "8f5d3f23e128aeddb9d8753fd18ce8581e7d8b8b3a409d30f6246d6ecd683104",
+      "vendored_sha256": "11b5cbdb66d14a846ccc561a11514ffd3f340c8f4521d03064c1e4bd9dbb9ba2"
+    },
+    "workflow.py": {
+      "source": "model_viewer/workflow.py",
+      "source_sha256": "884fe09ba8de2177665ecaee0d52b0dcf44758c9234205460954e48fd12f9c21",
+      "vendored_sha256": "75d4936916887bae85a61502a701236ba2f1d148d4da1abe8a5c2f4fd8d981dd"
+    },
+    "physics_carrier.py": {
+      "source": "Builder-local implementation",
+      "vendored_sha256": "2554da39d8c3cb0316c1a123f00d2c1878b1c31c46de26658add945a0e61c274",
+      "license": "AGPL-3.0-only"
+    }
+  },
+  "local_adaptation": {
+    "version": "0.2.8",
+    "description": "Builder owns opaque physics-carrier envelope validation. Native parsers/codecs and vertex rewriting removed; no upstream resync of removed modules.",
+    "removed_modules": [
+      "physics.py",
+      "physics_nxu.py",
+      "physics_package.py",
+      "physics_cooking.py",
+      "physics_cooked.py",
+      "physics_triangle.py",
+      "physics_triangle_codec.py"
+    ]
+  }
+}
